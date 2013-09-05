@@ -35,9 +35,11 @@ static NSString *const kURIRepresentationKey = @"URIRepresentation";
          usingBlock:^(NSNotification *note) {
              NSManagedObjectContext *savingContext = [note object];
              if ([savingContext parentContext] == [self privateQueueContext]) {
-                 [__privateQueueContext performBlock:^{
-                     [__privateQueueContext save:nil];
-                 }];
+                 dispatch_async(dispatch_get_main_queue(), ^{
+                     [__privateQueueContext performBlock:^{
+                         [__privateQueueContext save:nil];
+                     }];
+                 });
              }
          }];
 	}
